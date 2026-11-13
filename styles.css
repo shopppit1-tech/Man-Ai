@@ -28,6 +28,27 @@
 .auth-modal input { width: 100%; height: 40px; border: 1px solid var(--border-main); border-radius: 8px; padding: 0 10px; font-size: 14px; }
 .auth-actions { display: flex; gap: 8px; margin-top: 18px; }
 .auth-actions .btn { flex: 1; }
+.connectors-modal { max-width: 520px; text-align: left; }
+.connectors-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
+.connectors-heading h3 { margin-bottom: 4px; }
+.connectors-heading p { color: var(--text-secondary); font-size: 13px; }
+.icon-close { border: 0; background: transparent; font-size: 28px; line-height: 1; color: var(--text-secondary); cursor: pointer; }
+.connector-actions { background: #f6f6f4; border-radius: 14px; overflow: hidden; margin-bottom: 16px; }
+.connector-action { width: 100%; display: grid; grid-template-columns: 28px 1fr auto; align-items: center; gap: 10px; border: 0; border-bottom: 1px solid #e8e8e4; background: transparent; padding: 16px; text-align: left; font-size: 15px; cursor: pointer; }
+.connector-action:last-child { border-bottom: 0; }
+.connector-action strong { font-size: 24px; font-weight: 400; }
+.connector-action b { font-size: 24px; color: var(--text-secondary); font-weight: 400; }
+.connector-list { background: #f6f6f4; border-radius: 14px; padding: 6px 16px; }
+.connector-row { min-height: 58px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #e8e8e4; }
+.connector-row:last-child { border-bottom: 0; }
+.connector-icon { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; color: white; font-size: 11px; font-weight: 700; }
+.github-icon { background: #111; }
+.supabase-icon { background: #32b67a; }
+.render-icon { background: #111; }
+.connector-name { flex: 1; font-size: 15px; }
+.connector-status, .connector-connected { border: 0; background: transparent; color: #777; font-size: 13px; cursor: pointer; }
+.connector-connected { color: #219653; font-weight: 600; }
+.connector-feedback { min-height: 38px; margin: 14px 2px 0; color: var(--text-secondary); font-size: 12px; line-height: 1.45; }
 .footer-col span { font-size: 14px; color: var(--text-secondary); }
 .send-btn:disabled { cursor: not-allowed; }
 .chat-input-area:focus { outline: none; }

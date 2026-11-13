@@ -18,6 +18,7 @@
         <div class="nav-actions">
           <span class="connection-status"><span class="status-dot" aria-hidden="true"></span>Gemini AI · tanpa login</span>
           <button class="btn btn-secondary" id="install-btn" type="button" hidden>Instal aplikasi</button>
+          <button class="btn btn-secondary" id="connectors-btn" type="button">Konektor</button>
           <button class="btn btn-secondary" id="auth-btn" type="button">Login email</button>
           <button class="btn btn-primary" id="try-chat-btn" type="button">Mulai chat</button>
           <button class="btn btn-secondary" id="help-btn" type="button">Cara kerja</button>
@@ -86,6 +87,27 @@
         </div>
       </form>
       <button class="btn btn-secondary modal-close" id="auth-close" type="button">Tutup</button>
+    </section>
+  </div>
+  <div class="modal-backdrop" id="connectors-backdrop" hidden>
+    <section class="modal connectors-modal" role="dialog" aria-modal="true" aria-labelledby="connectors-title">
+      <div class="connectors-heading">
+        <div>
+          <h3 id="connectors-title">Konektor</h3>
+          <p>Hubungkan akun Anda sendiri untuk memakai layanan eksternal.</p>
+        </div>
+        <button class="icon-close" id="connectors-close" type="button" aria-label="Tutup">×</button>
+      </div>
+      <div class="connector-actions">
+        <button class="connector-action" id="add-connector-btn" type="button"><strong>＋</strong><span>Tambahkan konektor</span><b>›</b></button>
+        <button class="connector-action" id="manage-connector-btn" type="button"><strong>☷</strong><span>Kelola konektor</span><b>›</b></button>
+      </div>
+      <div class="connector-list" aria-label="Daftar konektor">
+        <div class="connector-row"><span class="connector-icon github-icon">GH</span><span class="connector-name">GitHub</span><button class="connector-status" data-provider="GitHub" type="button">Sambungkan</button></div>
+        <div class="connector-row"><span class="connector-icon supabase-icon">S</span><span class="connector-name">Supabase</span><span class="connector-connected">Terhubung</span></div>
+        <div class="connector-row"><span class="connector-icon render-icon">R</span><span class="connector-name">Render</span><button class="connector-status" data-provider="Render" type="button">Sambungkan</button></div>
+      </div>
+      <p id="connector-feedback" class="connector-feedback" aria-live="polite"></p>
     </section>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

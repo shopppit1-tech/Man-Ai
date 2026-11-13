@@ -14,6 +14,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const authEmail = document.getElementById("auth-email");
   const authPassword = document.getElementById("auth-password");
   const authStatus = document.getElementById("auth-status");
+  const connectorsBtn = document.getElementById("connectors-btn");
+  const connectorsBackdrop = document.getElementById("connectors-backdrop");
+  const connectorsClose = document.getElementById("connectors-close");
+  const connectorFeedback = document.getElementById("connector-feedback");
   let previousInteractionId = null;
   let busy = false;
   let deferredInstallPrompt = null;
@@ -104,6 +108,16 @@ document.addEventListener("DOMContentLoaded", () => {
   function closeAuth() {
     authBackdrop.hidden = true;
     authBtn.focus();
+  }
+
+  function openConnectors() {
+    connectorsBackdrop.hidden = false;
+    connectorFeedback.textContent = "";
+  }
+
+  function closeConnectors() {
+    connectorsBackdrop.hidden = true;
+    connectorsBtn.focus();
   }
 
   function updateAuthButton() {
@@ -203,6 +217,22 @@ document.addEventListener("DOMContentLoaded", () => {
   authClose.addEventListener("click", closeAuth);
   authBackdrop.addEventListener("click", (event) => {
     if (event.target === authBackdrop) closeAuth();
+  });
+  connectorsBtn.addEventListener("click", openConnectors);
+  connectorsClose.addEventListener("click", closeConnectors);
+  connectorsBackdrop.addEventListener("click", (event) => {
+    if (event.target === connectorsBackdrop) closeConnectors();
+  });
+  document.querySelectorAll(".connector-status").forEach((button) => {
+    button.addEventListener("click", () => {
+      connectorFeedback.textContent = `${button.dataset.provider} membutuhkan OAuth aplikasi agar setiap pengguna dapat menyambungkan akunnya sendiri. Pengaturan provider akan ditambahkan setelah kredensial OAuth dikonfigurasi.`;
+    });
+  });
+  document.getElementById("add-connector-btn").addEventListener("click", () => {
+    connectorFeedback.textContent = "Konektor yang tersedia saat ini: GitHub, Supabase, dan Render.";
+  });
+  document.getElementById("manage-connector-btn").addEventListener("click", () => {
+    connectorFeedback.textContent = "Supabase terhubung untuk login dan riwayat chat. GitHub dan Render menunggu OAuth per pengguna.";
   });
   authForm.addEventListener("submit", async (event) => {
     event.preventDefault();
