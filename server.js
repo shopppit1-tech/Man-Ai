@@ -109,8 +109,9 @@ async function handleChat(req, res) {
     return sendJson(res, 405, { error: "Use POST for chat requests." });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
-  if (!apiKey) {
+  const apiKeys = [process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY, process.env.GEMINI_API_KEY_BACKUP]
+    .filter((key, index, keys) => Boolean(key) && keys.indexOf(key) === index);
+  if (apiKeys.length === 0) {
     return sendJson(res, 503, { error: "GEMINI_API_KEY is not configured on the server." });
   }
 
@@ -144,16 +145,23 @@ async function handleChat(req, res) {
   }
 
   try {
-    const upstream = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": apiKey
-      },
-      body: JSON.stringify(requestBody),
-      signal: AbortSignal.timeout(60_000)
-    });
-    const result = await upstream.json().catch(() => ({}));
+    let upstream;
+    let result = {};
+    for (let index = 0; index < apiKeys.length; index += 1) {
+      upstream = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": apiKeys[index]
+        },
+        body: JSON.stringify(requestBody),
+        signal: AbortSignal.timeout(60_000)
+      });
+      result = await upstream.json().catch(() => ({}));
+      const canTryBackup = index < apiKeys.length - 1 && [401, 403, 429].includes(upstream.status);
+      if (upstream.ok || !canTryBackup) break;
+      console.warn("Primary Gemini API key unavailable; trying configured backup key.");
+    }
     if (!upstream.ok) {
       console.error("Gemini API request failed with status", upstream.status);
       if (upstream.status === 429) return sendJson(res, 429, { error: "Gemini is busy or its quota was reached. Try again later." });
