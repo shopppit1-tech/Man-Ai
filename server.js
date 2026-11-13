@@ -109,7 +109,11 @@ async function handleChat(req, res) {
     return sendJson(res, 405, { error: "Use POST for chat requests." });
   }
 
-  const apiKeys = [process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY, process.env.GEMINI_API_KEY_BACKUP]
+  const apiKeys = [
+    process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY,
+    process.env.GEMINI_API_KEY_BACKUP,
+    process.env.GEMINI_API_KEY_BACKUP_2
+  ]
     .filter((key, index, keys) => Boolean(key) && keys.indexOf(key) === index);
   if (apiKeys.length === 0) {
     return sendJson(res, 503, { error: "GEMINI_API_KEY is not configured on the server." });
