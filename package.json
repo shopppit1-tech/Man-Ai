@@ -1,0 +1,12 @@
+{
+  "name": "man-ai-gemini-chat",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Login-free Gemini-powered chat website with a server-side API proxy.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

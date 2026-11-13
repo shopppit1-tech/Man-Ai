@@ -1,1 +1,89 @@
-<!DOCTYPE html><html lang="en" class="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Manus: Hands On AI</title><meta name="description" content="Manus is the action engine that goes beyond answers to execute tasks, automate workflows, and extend your human reach."><link rel="stylesheet" href="styles.css"></head><body><div class="app-container"><header class="top-nav"><div class="nav-content"><a href="/?index=1" class="logo-link"><strong>Manus</strong></a><div class="nav-actions"><button class="btn btn-primary" id="signin-btn">Sign in</button><button class="btn btn-secondary" id="signup-btn">Sign up</button></div></div></header><div class="announcement-banner"><a href="http://manus.im/blog/introducing-manus-2-0" target="_blank">Introducing Manus 2.0</a></div><main class="main-content"><div class="hero-section"><button type="button" title="Play video" class="video-trigger-btn" id="video-modal-trigger"><div class="video-poster"></div><span class="play-icon">&#9658;</span></button><div class="hero-title-wrapper"><h1>What can I do for you?</h1></div><div class="chat-box-container"><div class="chat-box"><div class="chat-input-area" contenteditable="true" data-placeholder="Ask Manus anything..."></div><div class="chat-toolbar"><div class="chips-scroller"><button class="chip">Create slides</button><button class="chip">Build website</button><button class="chip">Create games</button><button class="chip">Video</button><button class="chip">Design</button></div><button class="send-btn" id="send-btn" disabled>&#10148;</button></div></div></div><div class="intelligence-section"><h2>Less structure, more intelligence.</h2></div></div></main><footer class="site-footer"><div class="footer-columns"><div class="footer-col"><h3>Product</h3><ul><li><a href="https://manus.im/pricing">Pricing</a></li><li><a href="https://manus.im/features/webapp">Web app</a></li><li><a href="https://manus.im/tools/ai-design">AI design</a></li><li><a href="https://manus.im/tools/nano-banana-pro-slides">AI slides</a></li><li><a href="https://manus.im/tools/ai-image-generator">AI image generator</a></li><li><a href="https://manus.im/tools/ai-music-generator">AI music generator</a></li><li><a href="https://manus.im/features/video">Video</a></li><li><a href="https://manus.im/features/wide-research">Wide Research</a></li><li><a href="https://manus.im/integrations/slack">Slack integration</a></li><li><a href="https://manus.im/models">All models</a></li><li><a href="https://manus.im/features">More features</a></li></ul></div><div class="footer-col"><h3>Resources</h3><ul><li><a href="https://manus.im/download">Download</a></li><li><a href="https://manus.im/blog">Blog</a></li><li><a href="https://manus.im/docs">Docs</a></li><li><a href="https://manus.im/updates">Updates</a></li><li><a href="https://help.manus.im/en">Help center</a></li><li><a href="https://trust.manus.im/">Trust center</a></li><li><a href="https://open.manus.ai/docs">API</a></li></ul></div><div class="footer-col"><h3>Community</h3><ul><li><a href="https://manus.im/events">Events</a></li><li><a href="https://manus.im/fellows">Fellows</a></li></ul></div><div class="footer-col"><h3>Compare</h3><ul><li><a href="#">VS ChatGPT</a></li><li><a href="#">VS Lovable</a></li><li><a href="#">VS Replit</a></li></ul></div><div class="footer-col"><h3>Download</h3><ul><li><a href="#">Mobile app</a></li><li><a href="#">Desktop app</a></li><li><a href="#">My Browser</a></li></ul></div><div class="footer-col"><h3>Business</h3><ul><li><a href="https://manus.im/team">Team plan</a></li><li><a href="https://manus.im/startups">Startups</a></li><li><a href="https://manus.im/playbook">Playbook</a></li><li><a href="https://manus.im/brand">Brand assets</a></li></ul></div><div class="footer-col"><h3>Company</h3><ul><li><a href="#">About us</a></li><li><a href="#">Careers</a></li><li><a href="#">For media</a></li><li><a href="https://manus.im/terms">Terms of service</a></li><li><a href="https://manus.im/privacy">Privacy policy</a></li></ul></div></div><div class="footer-bottom"><p>&copy; 2026 Manus AI</p><span class="lang-selector">English</span></div></footer></div><div class="modal-backdrop" id="modal-backdrop"><div class="modal" id="modal"><h3>Authentication</h3><p id="modal-text">Sign in to your Manus account to continue.</p><button class="btn btn-primary" style="width:100%; margin-top:16px;" id="modal-close">Close</button></div></div></div><script src="script.js"></script></body></html>
+<!doctype html>
+<html lang="en" class="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Man-Ai — Hands On AI</title>
+  <meta name="description" content="Chat with Man-Ai, powered by Gemini. No account required.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="top-nav">
+      <div class="nav-content">
+        <a href="/" class="logo-link"><strong>Man-Ai</strong></a>
+        <div class="nav-actions">
+          <span class="connection-status"><span class="status-dot" aria-hidden="true"></span>Gemini AI · no login</span>
+          <button class="btn btn-primary" id="try-chat-btn" type="button">Start chatting</button>
+          <button class="btn btn-secondary" id="help-btn" type="button">How it works</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="announcement-banner"><span>Ask a question or choose a prompt to start</span></div>
+
+    <main class="main-content">
+      <section class="hero-section" aria-labelledby="page-title">
+        <div class="hero-mark" aria-hidden="true"><span>✦</span></div>
+        <div class="hero-title-wrapper">
+          <h1 id="page-title">What can I do for you?</h1>
+          <p class="hero-subtitle">Real AI responses from Gemini. No account needed.</p>
+        </div>
+
+        <div class="chat-box-container">
+          <div class="chat-box">
+            <div class="conversation" id="conversation" role="log" aria-live="polite" aria-relevant="additions" aria-label="Conversation"></div>
+            <div class="chat-input-area" id="chat-input" contenteditable="true" role="textbox" aria-label="Message Gemini" aria-multiline="true" data-placeholder="Ask anything..."></div>
+            <div class="chat-toolbar">
+              <div class="chips-scroller" aria-label="Prompt examples">
+                <button class="chip" type="button">Explain a complex idea simply</button>
+                <button class="chip" type="button">Help me plan a website</button>
+                <button class="chip" type="button">Brainstorm a game</button>
+                <button class="chip" type="button">Draft a video script</button>
+                <button class="chip" type="button">Design a brand concept</button>
+              </div>
+              <button class="send-btn" id="send-btn" type="button" aria-label="Send message" disabled>&#10148;</button>
+            </div>
+          </div>
+          <p class="chat-note">Powered by Google Gemini API. Your messages are sent to Gemini to generate replies. This chat does not sign you in to Manus or execute external tasks.</p>
+        </div>
+
+        <section class="intelligence-section" id="how-it-works">
+          <h2>Less structure, more intelligence.</h2>
+          <p>Type a question, press Enter, and Gemini will reply. Use Shift + Enter for a new line.</p>
+        </section>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-columns">
+        <div class="footer-col"><h3>Product</h3><ul>
+          <li><a href="https://ai.google.dev/gemini-api/docs" target="_blank" rel="noopener noreferrer">Gemini API</a></li>
+          <li><a href="https://manus.im/pricing" target="_blank" rel="noopener noreferrer">Manus pricing</a></li>
+          <li><a href="https://manus.im/features" target="_blank" rel="noopener noreferrer">Manus features</a></li>
+        </ul></div>
+        <div class="footer-col"><h3>Resources</h3><ul>
+          <li><a href="https://ai.google.dev/gemini-api/docs" target="_blank" rel="noopener noreferrer">Gemini documentation</a></li>
+          <li><a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer">Get a Gemini API key</a></li>
+          <li><a href="https://manus.im/blog" target="_blank" rel="noopener noreferrer">Manus blog</a></li>
+        </ul></div>
+        <div class="footer-col"><h3>About this site</h3><ul>
+          <li><span>Independent Gemini-powered chat</span></li>
+          <li><span>No user account required</span></li>
+          <li><span>Not an official Manus service</span></li>
+        </ul></div>
+      </div>
+      <div class="footer-bottom"><p>&copy; 2026 Man-Ai</p><span class="lang-selector">Gemini powered</span></div>
+    </footer>
+  </div>
+
+  <div class="modal-backdrop" id="modal-backdrop" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-text">
+      <h3 id="modal-title">How it works</h3>
+      <p id="modal-text">This site sends your message to a small server, which calls the Gemini API. The API key stays on the server and is never included in the public page. Visitors do not need to log in. The server owner must configure a Gemini API key before replies can be generated.</p>
+      <button class="btn btn-primary modal-close" id="modal-close" type="button">Back to chat</button>
+    </section>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
