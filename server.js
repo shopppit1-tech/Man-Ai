@@ -236,7 +236,7 @@ function serveStatic(req, res, pathname) {
     const type = contentTypes[path.extname(filePath).toLowerCase()] || "application/octet-stream";
     res.writeHead(200, {
       "Content-Type": type,
-      "Cache-Control": ["/", "/index.html", "/service-worker.js", "/manifest.webmanifest"].includes(pathname)
+      "Cache-Control": ["/", "/index.html", "/service-worker.js", "/manifest.webmanifest", "/script.js", "/styles.css"].includes(pathname)
         ? "no-cache, no-store, must-revalidate"
         : "public, max-age=3600",
       "X-Content-Type-Options": "nosniff",
