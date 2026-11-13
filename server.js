@@ -161,7 +161,15 @@ async function handleChat(req, res) {
       return sendJson(res, 502, { error: "Gemini could not complete the request. Please try again later." });
     }
 
-    const reply = typeof result.output_text === "string" ? result.output_text.trim() : "";
+    const reply = typeof result.output_text === "string"
+      ? result.output_text.trim()
+      : (Array.isArray(result.steps) ? result.steps
+        .filter((step) => step.type === "model_output" && Array.isArray(step.content))
+        .flatMap((step) => step.content)
+        .filter((part) => part.type === "text" && typeof part.text === "string")
+        .map((part) => part.text)
+        .join("\n")
+        .trim() : "");
     if (!reply) return sendJson(res, 502, { error: "Gemini returned an empty response. Please try again." });
     return sendJson(res, 200, {
       reply,
