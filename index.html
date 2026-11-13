@@ -18,6 +18,7 @@
         <div class="nav-actions">
           <span class="connection-status"><span class="status-dot" aria-hidden="true"></span>Gemini AI · tanpa login</span>
           <button class="btn btn-secondary" id="install-btn" type="button" hidden>Instal aplikasi</button>
+          <button class="btn btn-secondary" id="auth-btn" type="button">Login email</button>
           <button class="btn btn-primary" id="try-chat-btn" type="button">Mulai chat</button>
           <button class="btn btn-secondary" id="help-btn" type="button">Cara kerja</button>
         </div>
@@ -70,6 +71,25 @@
       <button class="btn btn-primary modal-close" id="modal-close" type="button">Kembali ke chat</button>
     </section>
   </div>
+  <div class="modal-backdrop" id="auth-backdrop" hidden>
+    <section class="modal auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+      <h3 id="auth-title">Login ke Man-Ai</h3>
+      <p id="auth-status" class="auth-status" aria-live="polite">Gunakan email dan kata sandi Anda.</p>
+      <form id="auth-form">
+        <label for="auth-email">Email</label>
+        <input id="auth-email" type="email" autocomplete="email" required>
+        <label for="auth-password">Kata sandi</label>
+        <input id="auth-password" type="password" autocomplete="current-password" minlength="6" required>
+        <div class="auth-actions">
+          <button class="btn btn-primary" type="submit">Login</button>
+          <button class="btn btn-secondary" id="signup-btn" type="button">Daftar</button>
+        </div>
+      </form>
+      <button class="btn btn-secondary modal-close" id="auth-close" type="button">Tutup</button>
+    </section>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/supabase-config.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

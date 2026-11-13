@@ -6,9 +6,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalBackdrop = document.getElementById("modal-backdrop");
   const modalClose = document.getElementById("modal-close");
   const installBtn = document.getElementById("install-btn");
+  const authBtn = document.getElementById("auth-btn");
+  const authBackdrop = document.getElementById("auth-backdrop");
+  const authClose = document.getElementById("auth-close");
+  const authForm = document.getElementById("auth-form");
+  const signupBtn = document.getElementById("signup-btn");
+  const authEmail = document.getElementById("auth-email");
+  const authPassword = document.getElementById("auth-password");
+  const authStatus = document.getElementById("auth-status");
   let previousInteractionId = null;
   let busy = false;
   let deferredInstallPrompt = null;
+  let currentUser = null;
+  const supabaseConfig = window.__SUPABASE_CONFIG__ || {};
+  const authClient = window.supabase && supabaseConfig.url && supabaseConfig.anonKey
+    ? window.supabase.createClient(supabaseConfig.url, supabaseConfig.anonKey)
+    : null;
 
   function updateSendButton() {
     sendBtn.disabled = busy || chatInput.textContent.trim().length === 0;
@@ -79,6 +92,46 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("help-btn").focus();
   }
 
+  function openAuth() {
+    authBackdrop.hidden = false;
+    authStatus.textContent = authClient ? "Gunakan email dan kata sandi Anda." : "Login belum dikonfigurasi di server.";
+    authEmail.focus();
+  }
+
+  function closeAuth() {
+    authBackdrop.hidden = true;
+    authBtn.focus();
+  }
+
+  function updateAuthButton() {
+    authBtn.textContent = currentUser ? "Logout" : "Login email";
+  }
+
+  async function login() {
+    if (!authClient) throw new Error("Login Supabase belum dikonfigurasi.");
+    const { data, error } = await authClient.auth.signInWithPassword({
+      email: authEmail.value.trim(),
+      password: authPassword.value
+    });
+    if (error) throw error;
+    currentUser = data.user;
+    updateAuthButton();
+    authStatus.textContent = `Login sebagai ${currentUser.email}.`;
+  }
+
+  async function signup() {
+    if (!authClient) throw new Error("Login Supabase belum dikonfigurasi.");
+    const { data, error } = await authClient.auth.signUp({
+      email: authEmail.value.trim(),
+      password: authPassword.value,
+      options: { emailRedirectTo: window.location.origin }
+    });
+    if (error) throw error;
+    authStatus.textContent = data.session
+      ? "Akun berhasil dibuat dan Anda sudah login."
+      : "Akun dibuat. Periksa email Anda untuk konfirmasi sebelum login.";
+  }
+
   chatInput.addEventListener("input", updateSendButton);
   chatInput.addEventListener("keydown", (event) => {
     if (event.key === "Enter" && !event.shiftKey) {
@@ -105,6 +158,44 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !modalBackdrop.hidden) closeHelp();
   });
+
+  authBtn.addEventListener("click", async () => {
+    if (!currentUser) return openAuth();
+    if (authClient) await authClient.auth.signOut();
+    currentUser = null;
+    updateAuthButton();
+  });
+  authClose.addEventListener("click", closeAuth);
+  authBackdrop.addEventListener("click", (event) => {
+    if (event.target === authBackdrop) closeAuth();
+  });
+  authForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    authStatus.textContent = "Memproses login…";
+    try {
+      await login();
+    } catch (error) {
+      authStatus.textContent = error.message || "Login gagal. Periksa email dan kata sandi.";
+    }
+  });
+  signupBtn.addEventListener("click", async () => {
+    authStatus.textContent = "Membuat akun…";
+    try {
+      await signup();
+    } catch (error) {
+      authStatus.textContent = error.message || "Pendaftaran gagal.";
+    }
+  });
+  if (authClient) {
+    authClient.auth.getSession().then(({ data }) => {
+      currentUser = data.session?.user || null;
+      updateAuthButton();
+    });
+    authClient.auth.onAuthStateChange((_event, session) => {
+      currentUser = session?.user || null;
+      updateAuthButton();
+    });
+  }
 
   window.addEventListener("beforeinstallprompt", (event) => {
     event.preventDefault();

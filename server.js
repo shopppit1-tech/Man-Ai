@@ -53,6 +53,19 @@ function sendJson(res, status, value) {
   res.end(payload);
 }
 
+function sendSupabaseConfig(res) {
+  const payload = `window.__SUPABASE_CONFIG__ = ${JSON.stringify({
+    url: process.env.SUPABASE_URL || "",
+    anonKey: process.env.SUPABASE_ANON_KEY || ""
+  })};`;
+  res.writeHead(200, {
+    "Content-Type": "text/javascript; charset=utf-8",
+    "Cache-Control": "no-store",
+    "X-Content-Type-Options": "nosniff"
+  });
+  res.end(payload);
+}
+
 function getClientKey(req) {
   const forwarded = req.headers["x-forwarded-for"];
   if (typeof forwarded === "string" && forwarded.length < 256) {
@@ -228,7 +241,7 @@ function serveStatic(req, res, pathname) {
         : "public, max-age=3600",
       "X-Content-Type-Options": "nosniff",
       "Referrer-Policy": "strict-origin-when-cross-origin",
-      "Content-Security-Policy": "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; base-uri 'self'; frame-ancestors 'none'"
+      "Content-Security-Policy": "default-src 'self'; connect-src 'self' https://mgntwsjbaihyhtwetbdi.supabase.co; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' https://cdn.jsdelivr.net; base-uri 'self'; frame-ancestors 'none'"
     });
     if (req.method === "HEAD") return res.end();
     fs.createReadStream(filePath).pipe(res);
@@ -238,6 +251,7 @@ function serveStatic(req, res, pathname) {
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
   if (url.pathname === "/api/chat") return void handleChat(req, res);
+  if (url.pathname === "/supabase-config.js") return void sendSupabaseConfig(res);
   return serveStatic(req, res, url.pathname);
 });
 
