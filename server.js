@@ -88,7 +88,7 @@ function readJson(req) {
     req.on("data", (chunk) => {
       body += chunk;
       if (Buffer.byteLength(body) > MAX_BODY_BYTES) {
-        reject(Object.assign(new Error("Request body is too large."), { status: 413 }));
+        reject(Object.assign(new Error("Isi permintaan terlalu besar."), { status: 413 }));
         req.destroy();
       }
     });
@@ -96,7 +96,7 @@ function readJson(req) {
       try {
         resolve(JSON.parse(body || "{}"));
       } catch {
-        reject(Object.assign(new Error("Invalid JSON request."), { status: 400 }));
+        reject(Object.assign(new Error("Format JSON permintaan tidak valid."), { status: 400 }));
       }
     });
     req.on("error", reject);
@@ -106,7 +106,7 @@ function readJson(req) {
 async function handleChat(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
-    return sendJson(res, 405, { error: "Use POST for chat requests." });
+    return sendJson(res, 405, { error: "Gunakan metode POST untuk mengirim pesan." });
   }
 
   const apiKeys = [
@@ -116,31 +116,31 @@ async function handleChat(req, res) {
   ]
     .filter((key, index, keys) => Boolean(key) && keys.indexOf(key) === index);
   if (apiKeys.length === 0) {
-    return sendJson(res, 503, { error: "GEMINI_API_KEY is not configured on the server." });
+    return sendJson(res, 503, { error: "Kunci Gemini API belum dikonfigurasi di server." });
   }
 
   if (isDailyLimitReached()) {
-    return sendJson(res, 429, { error: "The shared daily message limit has been reached. Please try again tomorrow." });
+    return sendJson(res, 429, { error: "Batas pesan harian sudah tercapai. Silakan coba lagi besok." });
   }
   const clientKey = getClientKey(req);
   if (isRateLimited(clientKey)) {
-    return sendJson(res, 429, { error: "Too many messages. Please wait a minute and try again." });
+    return sendJson(res, 429, { error: "Terlalu banyak pesan. Tunggu satu menit lalu coba lagi." });
   }
 
   let body;
   try {
     body = await readJson(req);
   } catch (error) {
-    return sendJson(res, error.status || 400, { error: error.message || "Invalid request." });
+    return sendJson(res, error.status || 400, { error: error.message || "Permintaan tidak valid." });
   }
 
   const message = typeof body.message === "string" ? body.message.trim() : "";
-  if (!message) return sendJson(res, 400, { error: "Message cannot be empty." });
-  if (message.length > 8000) return sendJson(res, 413, { error: "Message is too long (maximum 8,000 characters)." });
+  if (!message) return sendJson(res, 400, { error: "Pesan tidak boleh kosong." });
+  if (message.length > 8000) return sendJson(res, 413, { error: "Pesan terlalu panjang (maksimal 8.000 karakter)." });
 
   const requestBody = {
     model: MODEL,
-    system_instruction: "You are Man-Ai, a helpful AI chat assistant powered by Google Gemini. Answer accurately and naturally in the language used by the user. You can explain, brainstorm, draft, and help plan. You do not have access to external tools, websites, files, or the Manus platform, so never claim you executed real-world tasks or created files. If asked to create something, provide the content or a practical plan in your reply.",
+    system_instruction: "Anda adalah Man-Ai, asisten chat AI yang membantu dan didukung Google Gemini. Jawab selalu dalam Bahasa Indonesia yang jelas, alami, dan akurat, apa pun bahasa pertanyaan pengguna, kecuali pengguna secara khusus meminta teks dalam bahasa lain. Anda dapat menjelaskan, mencari ide, menulis draf, dan membantu membuat rencana. Anda tidak memiliki akses ke alat eksternal, situs web, file, atau platform Manus; jangan pernah mengaku telah menjalankan tugas nyata atau membuat file. Jika diminta membuat sesuatu, berikan konten atau rencana praktis dalam jawaban.",
     generation_config: { max_output_tokens: 1024, thinking_level: "low" },
     input: message
   };
@@ -168,9 +168,9 @@ async function handleChat(req, res) {
     }
     if (!upstream.ok) {
       console.error("Gemini API request failed with status", upstream.status);
-      if (upstream.status === 429) return sendJson(res, 429, { error: "Gemini is busy or its quota was reached. Try again later." });
-      if (upstream.status === 401 || upstream.status === 403) return sendJson(res, 502, { error: "Gemini rejected the server API key. Check the key and API access settings." });
-      return sendJson(res, 502, { error: "Gemini could not complete the request. Please try again later." });
+      if (upstream.status === 429) return sendJson(res, 429, { error: "Gemini sedang sibuk atau kuotanya tercapai. Silakan coba lagi nanti." });
+      if (upstream.status === 401 || upstream.status === 403) return sendJson(res, 502, { error: "Gemini menolak kunci API di server. Periksa kunci dan akses API." });
+      return sendJson(res, 502, { error: "Gemini belum dapat memproses permintaan. Silakan coba lagi nanti." });
     }
 
     const reply = typeof result.output_text === "string"
@@ -182,7 +182,7 @@ async function handleChat(req, res) {
         .map((part) => part.text)
         .join("\n")
         .trim() : "");
-    if (!reply) return sendJson(res, 502, { error: "Gemini returned an empty response. Please try again." });
+    if (!reply) return sendJson(res, 502, { error: "Gemini tidak mengirim jawaban. Silakan coba lagi." });
     return sendJson(res, 200, {
       reply,
       interactionId: typeof result.id === "string" ? result.id : null
@@ -190,8 +190,8 @@ async function handleChat(req, res) {
   } catch (error) {
     console.error("Gemini API connection error:", error.name || "Error");
     const message = error.name === "TimeoutError"
-      ? "Gemini took too long to respond. Please try again."
-      : "Could not reach Gemini. Please try again later.";
+      ? "Gemini terlalu lama merespons. Silakan coba lagi."
+      : "Tidak dapat terhubung ke Gemini. Silakan coba lagi nanti.";
     return sendJson(res, 502, { error: message });
   }
 }
@@ -199,25 +199,25 @@ async function handleChat(req, res) {
 function serveStatic(req, res, pathname) {
   if (req.method !== "GET" && req.method !== "HEAD") {
     res.writeHead(405, { Allow: "GET, HEAD" });
-    return res.end("Method Not Allowed");
+    return res.end("Metode tidak diizinkan");
   }
   let decoded;
   try {
     decoded = decodeURIComponent(pathname);
   } catch {
     res.writeHead(400);
-    return res.end("Bad Request");
+    return res.end("Permintaan tidak valid");
   }
   const relative = decoded === "/" ? "index.html" : decoded.replace(/^\/+/, "");
   const filePath = path.resolve(ROOT, relative);
   if (!filePath.startsWith(`${ROOT}${path.sep}`) && filePath !== ROOT) {
     res.writeHead(403);
-    return res.end("Forbidden");
+    return res.end("Akses ditolak");
   }
   fs.stat(filePath, (statError, stat) => {
     if (statError || !stat.isFile()) {
       res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
-      return res.end("Not Found");
+      return res.end("Halaman tidak ditemukan");
     }
     const type = contentTypes[path.extname(filePath).toLowerCase()] || "application/octet-stream";
     res.writeHead(200, {

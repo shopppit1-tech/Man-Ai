@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en" class="light">
+<html lang="id" class="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Man-Ai — Hands On AI</title>
-  <meta name="description" content="Chat with Man-Ai, powered by Gemini. No account required.">
+  <title>Man-Ai — Asisten AI</title>
+  <meta name="description" content="Ngobrol dengan Man-Ai yang didukung Gemini. Tanpa perlu membuat akun.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,75 +13,75 @@
       <div class="nav-content">
         <a href="/" class="logo-link"><strong>Man-Ai</strong></a>
         <div class="nav-actions">
-          <span class="connection-status"><span class="status-dot" aria-hidden="true"></span>Gemini AI · no login</span>
-          <button class="btn btn-primary" id="try-chat-btn" type="button">Start chatting</button>
-          <button class="btn btn-secondary" id="help-btn" type="button">How it works</button>
+          <span class="connection-status"><span class="status-dot" aria-hidden="true"></span>Gemini AI · tanpa login</span>
+          <button class="btn btn-primary" id="try-chat-btn" type="button">Mulai chat</button>
+          <button class="btn btn-secondary" id="help-btn" type="button">Cara kerja</button>
         </div>
       </div>
     </header>
 
-    <div class="announcement-banner"><span>Ask a question or choose a prompt to start</span></div>
+    <div class="announcement-banner"><span>Tanyakan apa saja atau pilih contoh untuk memulai</span></div>
 
     <main class="main-content">
       <section class="hero-section" aria-labelledby="page-title">
         <div class="hero-mark" aria-hidden="true"><span>✦</span></div>
         <div class="hero-title-wrapper">
-          <h1 id="page-title">What can I do for you?</h1>
-          <p class="hero-subtitle">Real AI responses from Gemini. No account needed.</p>
+          <h1 id="page-title">Ada yang bisa saya bantu?</h1>
+          <p class="hero-subtitle">Jawaban AI sungguhan dari Gemini. Tanpa perlu akun.</p>
         </div>
 
         <div class="chat-box-container">
           <div class="chat-box">
-            <div class="conversation" id="conversation" role="log" aria-live="polite" aria-relevant="additions" aria-label="Conversation"></div>
-            <div class="chat-input-area" id="chat-input" contenteditable="true" role="textbox" aria-label="Message Gemini" aria-multiline="true" data-placeholder="Ask anything..."></div>
+            <div class="conversation" id="conversation" role="log" aria-live="polite" aria-relevant="additions" aria-label="Percakapan"></div>
+            <div class="chat-input-area" id="chat-input" contenteditable="true" role="textbox" aria-label="Pesan untuk Gemini" aria-multiline="true" data-placeholder="Tanyakan apa saja..."></div>
             <div class="chat-toolbar">
-              <div class="chips-scroller" aria-label="Prompt examples">
-                <button class="chip" type="button">Explain a complex idea simply</button>
-                <button class="chip" type="button">Help me plan a website</button>
-                <button class="chip" type="button">Brainstorm a game</button>
-                <button class="chip" type="button">Draft a video script</button>
-                <button class="chip" type="button">Design a brand concept</button>
+              <div class="chips-scroller" aria-label="Contoh pertanyaan">
+                <button class="chip" type="button">Jelaskan hal rumit dengan sederhana</button>
+                <button class="chip" type="button">Bantu rencanakan situs web</button>
+                <button class="chip" type="button">Cari ide untuk sebuah game</button>
+                <button class="chip" type="button">Buat draf naskah video</button>
+                <button class="chip" type="button">Rancang konsep merek</button>
               </div>
-              <button class="send-btn" id="send-btn" type="button" aria-label="Send message" disabled>&#10148;</button>
+              <button class="send-btn" id="send-btn" type="button" aria-label="Kirim pesan" disabled>&#10148;</button>
             </div>
           </div>
-          <p class="chat-note">Powered by Google Gemini API. Your messages are sent to Gemini to generate replies. This chat does not sign you in to Manus or execute external tasks.</p>
+          <p class="chat-note">Didukung Google Gemini API. Pesan Anda dikirim ke Gemini untuk menghasilkan jawaban. Chat ini tidak menghubungkan Anda ke Manus atau menjalankan tugas eksternal.</p>
         </div>
 
         <section class="intelligence-section" id="how-it-works">
-          <h2>Less structure, more intelligence.</h2>
-          <p>Type a question, press Enter, and Gemini will reply. Use Shift + Enter for a new line.</p>
+          <h2>Lebih cerdas, lebih fleksibel.</h2>
+          <p>Ketik pertanyaan lalu tekan Enter. Gemini akan menjawab. Gunakan Shift + Enter untuk membuat baris baru.</p>
         </section>
       </section>
     </main>
 
     <footer class="site-footer">
       <div class="footer-columns">
-        <div class="footer-col"><h3>Product</h3><ul>
+        <div class="footer-col"><h3>Produk</h3><ul>
           <li><a href="https://ai.google.dev/gemini-api/docs" target="_blank" rel="noopener noreferrer">Gemini API</a></li>
-          <li><a href="https://manus.im/pricing" target="_blank" rel="noopener noreferrer">Manus pricing</a></li>
-          <li><a href="https://manus.im/features" target="_blank" rel="noopener noreferrer">Manus features</a></li>
+          <li><a href="https://manus.im/pricing" target="_blank" rel="noopener noreferrer">Harga Manus</a></li>
+          <li><a href="https://manus.im/features" target="_blank" rel="noopener noreferrer">Fitur Manus</a></li>
         </ul></div>
-        <div class="footer-col"><h3>Resources</h3><ul>
-          <li><a href="https://ai.google.dev/gemini-api/docs" target="_blank" rel="noopener noreferrer">Gemini documentation</a></li>
-          <li><a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer">Get a Gemini API key</a></li>
-          <li><a href="https://manus.im/blog" target="_blank" rel="noopener noreferrer">Manus blog</a></li>
+        <div class="footer-col"><h3>Sumber</h3><ul>
+          <li><a href="https://ai.google.dev/gemini-api/docs" target="_blank" rel="noopener noreferrer">Dokumentasi Gemini</a></li>
+          <li><a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer">Dapatkan kunci API Gemini</a></li>
+          <li><a href="https://manus.im/blog" target="_blank" rel="noopener noreferrer">Blog Manus</a></li>
         </ul></div>
-        <div class="footer-col"><h3>About this site</h3><ul>
-          <li><span>Independent Gemini-powered chat</span></li>
-          <li><span>No user account required</span></li>
-          <li><span>Not an official Manus service</span></li>
+        <div class="footer-col"><h3>Tentang situs ini</h3><ul>
+          <li><span>Chat mandiri yang didukung Gemini</span></li>
+          <li><span>Tidak perlu akun pengguna</span></li>
+          <li><span>Bukan layanan resmi Manus</span></li>
         </ul></div>
       </div>
-      <div class="footer-bottom"><p>&copy; 2026 Man-Ai</p><span class="lang-selector">Gemini powered</span></div>
+      <div class="footer-bottom"><p>&copy; 2026 Man-Ai</p><span class="lang-selector">Didukung Gemini</span></div>
     </footer>
   </div>
 
   <div class="modal-backdrop" id="modal-backdrop" hidden>
     <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-text">
-      <h3 id="modal-title">How it works</h3>
-      <p id="modal-text">This site sends your message to a small server, which calls the Gemini API. The API key stays on the server and is never included in the public page. Visitors do not need to log in. The server owner must configure a Gemini API key before replies can be generated.</p>
-      <button class="btn btn-primary modal-close" id="modal-close" type="button">Back to chat</button>
+      <h3 id="modal-title">Cara kerja</h3>
+      <p id="modal-text">Situs ini mengirim pesan Anda ke server kecil yang menghubungi Gemini API. Kunci API tersimpan di server dan tidak pernah dimasukkan ke halaman publik. Pengunjung tidak perlu login. Pemilik server harus mengatur kunci Gemini API agar jawaban dapat dibuat.</p>
+      <button class="btn btn-primary modal-close" id="modal-close" type="button">Kembali ke chat</button>
     </section>
   </div>
   <script src="script.js"></script>

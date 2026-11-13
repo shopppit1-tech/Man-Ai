@@ -5,8 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const chips = document.querySelectorAll(".chip");
   const modalBackdrop = document.getElementById("modal-backdrop");
   const modalClose = document.getElementById("modal-close");
-  const modalTitle = document.getElementById("modal-title");
-  const modalText = document.getElementById("modal-text");
   let previousInteractionId = null;
   let busy = false;
 
@@ -19,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     message.className = `message message-${role} ${extraClass}`.trim();
     const label = document.createElement("span");
     label.className = "message-label";
-    label.textContent = role === "user" ? "You" : role === "assistant" ? "Gemini" : "Status";
+    label.textContent = role === "user" ? "Anda" : role === "assistant" ? "Gemini" : "Status";
     const body = document.createElement("p");
     body.className = "message-text";
     body.textContent = text;
@@ -38,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     chatInput.focus();
     busy = true;
     updateSendButton();
-    const pending = addMessage("assistant", "Gemini is thinking…", "message-pending");
+    const pending = addMessage("assistant", "Gemini sedang menyiapkan jawaban…", "message-pending");
 
     try {
       const response = await fetch("/api/chat", {
@@ -48,17 +46,20 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) {
-        throw new Error(result.error || `Request failed (${response.status})`);
+        throw new Error(result.error || `Permintaan gagal (${response.status})`);
       }
       pending.querySelector(".message-text").textContent = result.reply;
       pending.classList.remove("message-pending");
       previousInteractionId = result.interactionId || null;
     } catch (error) {
       pending.classList.add("message-error");
-      pending.querySelector(".message-label").textContent = "Could not reply";
-      pending.querySelector(".message-text").textContent = error.message.includes("GEMINI_API_KEY")
-        ? "Gemini has not been configured on the server yet. The site owner must add GEMINI_API_KEY as a server secret."
-        : `${error.message} Please try again in a moment.`;
+      pending.querySelector(".message-label").textContent = "Jawaban gagal dibuat";
+      const detail = error.message.includes("GEMINI_API_KEY")
+        ? "Gemini belum dikonfigurasi di server. Pemilik situs perlu menambahkan kunci API sebagai secret server."
+        : error.message.includes("Failed to fetch")
+          ? "Tidak dapat terhubung ke server. Periksa koneksi internet lalu coba lagi."
+          : `${error.message} Silakan coba lagi sebentar. `;
+      pending.querySelector(".message-text").textContent = detail.trim();
     } finally {
       busy = false;
       updateSendButton();
