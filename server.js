@@ -210,6 +210,80 @@ async function handleChat(req, res) {
   }
 }
 
+async function handleConnectorTest(req, res, provider) {
+  if (req.method !== "POST") {
+    res.setHeader("Allow", "POST");
+    return sendJson(res, 405, { error: "Gunakan metode POST untuk menguji konektor." });
+  }
+  if (isRateLimited(`connector:${getClientKey(req)}`)) {
+    return sendJson(res, 429, { error: "Terlalu banyak permintaan konektor. Coba lagi sebentar." });
+  }
+  let body;
+  try {
+    body = await readJson(req);
+  } catch (error) {
+    return sendJson(res, error.status || 400, { error: error.message || "Permintaan tidak valid." });
+  }
+
+  const requestUpstream = async (url, headers = {}) => fetch(url, {
+    method: "GET",
+    headers: { Accept: "application/json", ...headers },
+    signal: AbortSignal.timeout(15_000)
+  });
+
+  try {
+    if (provider === "github") {
+      const token = typeof body.token === "string" ? body.token.trim() : "";
+      if (!token || token.length > 512) return sendJson(res, 400, { error: "Token GitHub tidak valid." });
+      const response = await requestUpstream("https://api.github.com/user/repos?per_page=20&sort=updated", {
+        Authorization: `Bearer ${token}`, "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "Man-Ai-Connector"
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) return sendJson(res, 401, { error: response.status === 403 ? "GitHub menolak token atau batas API tercapai." : "Token GitHub tidak valid atau tidak memiliki akses baca repo." });
+      const repos = Array.isArray(data) ? data.slice(0, 20).map((repo) => ({ name: repo.full_name, private: Boolean(repo.private), branch: repo.default_branch })) : [];
+      return sendJson(res, 200, { identity: "GitHub terhubung", summary: `${repos.length} repo terakhir: ${repos.map((repo) => repo.name).join(", ") || "tidak ada repo yang terlihat"}`, items: repos });
+    }
+
+    if (provider === "render") {
+      const token = typeof body.token === "string" ? body.token.trim() : "";
+      if (!token || token.length > 512) return sendJson(res, 400, { error: "Render API key tidak valid." });
+      const response = await requestUpstream("https://api.render.com/v1/services?limit=20", { Authorization: `Bearer ${token}` });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) return sendJson(res, 401, { error: "Render menolak API key atau tidak dapat mengambil daftar service." });
+      const rows = Array.isArray(data) ? data : (Array.isArray(data.services) ? data.services : []);
+      const services = rows.slice(0, 20).map((entry) => {
+        const service = entry.service || entry;
+        return { name: service.name || "Service", type: service.type || "service", status: service.suspended === "suspended" ? "suspended" : (service.status || "terdaftar") };
+      });
+      return sendJson(res, 200, { identity: "Render terhubung", summary: `${services.length} service: ${services.map((item) => `${item.name} (${item.status})`).join(", ") || "belum ada service"}`, items: services });
+    }
+
+    if (provider === "supabase") {
+      const rawUrl = typeof body.url === "string" ? body.url.trim() : "";
+      const key = typeof body.key === "string" ? body.key.trim() : "";
+      let projectUrl;
+      try { projectUrl = new URL(rawUrl); } catch { return sendJson(res, 400, { error: "Project URL Supabase tidak valid." }); }
+      if (projectUrl.protocol !== "https:" || !/^[a-z0-9-]+\.supabase\.co$/i.test(projectUrl.hostname) || !["", "/"].includes(projectUrl.pathname)) {
+        return sendJson(res, 400, { error: "Gunakan URL proyek resmi https://<project-ref>.supabase.co." });
+      }
+      let role = "";
+      try { role = JSON.parse(Buffer.from(key.split(".")[1] || "", "base64url").toString("utf8")).role || ""; } catch {}
+      if (!key || key.length > 4096 || /service_role/i.test(key) || role === "service_role") return sendJson(res, 400, { error: "Masukkan publishable/anon key saja; service_role key tidak diizinkan." });
+      const supabaseHeaders = { apikey: key, Accept: "application/openapi+json" };
+      if (key.split(".").length === 3) supabaseHeaders.Authorization = `Bearer ${key}`;
+      const response = await requestUpstream(`${projectUrl.origin}/rest/v1/`, supabaseHeaders);
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) return sendJson(res, 401, { error: "Supabase menolak key atau REST API proyek tidak aktif." });
+      const tables = Object.keys(data.paths || {}).filter((path) => path.startsWith("/") && !path.startsWith("/rpc/")).map((path) => path.slice(1)).filter(Boolean).slice(0, 30);
+      return sendJson(res, 200, { identity: "Supabase terhubung", summary: `${tables.length} endpoint tabel tersedia untuk key ini: ${tables.join(", ") || "metadata API berhasil dibaca"}`, items: tables });
+    }
+    return sendJson(res, 404, { error: "Konektor tidak dikenal." });
+  } catch (error) {
+    const message = error.name === "TimeoutError" ? "Layanan terlalu lama merespons. Coba lagi." : "Tidak dapat menghubungi layanan. Periksa koneksi dan coba lagi.";
+    return sendJson(res, 502, { error: message });
+  }
+}
+
 function serveStatic(req, res, pathname) {
   if (req.method !== "GET" && req.method !== "HEAD") {
     res.writeHead(405, { Allow: "GET, HEAD" });
@@ -251,6 +325,8 @@ function serveStatic(req, res, pathname) {
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
   if (url.pathname === "/api/chat") return void handleChat(req, res);
+  const connectorMatch = url.pathname.match(/^\/api\/connectors\/(github|render|supabase)\/test$/);
+  if (connectorMatch) return void handleConnectorTest(req, res, connectorMatch[1]);
   if (url.pathname === "/supabase-config.js") return void sendSupabaseConfig(res);
   return serveStatic(req, res, url.pathname);
 });

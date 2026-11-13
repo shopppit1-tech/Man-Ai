@@ -1,1 +1,58 @@
-<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Manus</title><meta name="description" content="Manus is the action engine that goes beyond answers to execute tasks, automate workflows, and extend your human reach."><link rel="stylesheet" href="styles.css"></head><body class="dark-theme"><div class="bprogress"><div class="bar"><div class="peg"></div></div><div class="spinner"><div class="spinner-icon"></div></div></div><header class="app-header"><div class="header-left"><div class="logo-mark" aria-label="Manus Logo"></div><span class="brand-title">Manus</span></div><nav class="header-nav"><a href="#" class="nav-link active">App</a><a href="#" class="nav-link">Workflows</a><a href="#" class="nav-link">Activity</a><a href="#" class="nav-link">Docs</a></nav><div class="header-right"><button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><span>☀️/🌙</span></button><div class="user-avatar" aria-label="User profile">M</div></div></header><main class="app-main"><div class="hero-action-card"><div class="engine-status"><span class="status-dot"></span><span class="status-text">Action Engine Ready</span></div><h1>Go beyond answers. Execute tasks.</h1><p>Manus extends your human reach by automating complex workflows and executing multi-step tasks autonomously.</p><div class="prompt-container"><div class="prompt-input-wrapper"><textarea id="actionPrompt" placeholder="Ask Manus to execute a task, e.g., 'Analyze top 10 SaaS competitors and generate a report'..."></textarea><div class="prompt-actions"><div class="prompt-tools"><button class="tool-btn" title="Attach file">📎</button><button class="tool-btn" title="Search web">🌐</button><button class="tool-btn" title="Deep reasoning">⚡</button></div><button id="executeBtn" class="execute-btn"><span>Execute Task</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></div></div></div><div class="suggestions"><span class="suggestion-label">Try asking:</span><button class="chip">Audit smart contract vulnerabilities</button><button class="chip">Generate market research presentation</button><button class="chip">Scrape leads & draft outreach</button></div></div><div class="execution-terminal" id="terminalBox" style="display: none;"><div class="terminal-header"><span class="terminal-title">Execution Stream</span><div class="terminal-controls"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div></div><div class="terminal-body" id="terminalLogs"></div></div></main><div class="loading-overlay" id="loadingOverlay"><div class="relative size-20"><div class="manus-spinner"></div></div><p class="loading-subtext">Initializing Manus Engine...</p></div><script src="script.js"></script></body></html>
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101114">
+  <meta name="description" content="Man-Ai, asisten AI yang didukung Gemini.">
+  <title>Man-Ai — Asisten AI</title>
+  <link rel="icon" href="/icons/icon-192.png" type="image/png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Man-Ai beranda"><span class="brand-mark" aria-hidden="true">✳</span><span>Man-Ai</span></a>
+      <div class="topbar-right">
+        <span class="model-pill"><span class="live-dot"></span> Gemini AI</span>
+        <button class="icon-button" id="connectorsOpen" type="button" aria-label="Buka konektor" title="Konektor"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l2-2A5 5 0 0 0 12 3.93l-1.15 1.15"></path><path d="M14 11a5 5 0 0 0-7.07 0l-2 2A5 5 0 0 0 12 20.07l1.15-1.15"></path></svg></button>
+        <button class="icon-button" id="themeToggle" type="button" aria-label="Ganti tema" title="Ganti tema"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path></svg></button>
+      </div>
+    </header>
+    <main class="main-area">
+      <section class="welcome" id="welcomePanel">
+        <div class="welcome-icon" aria-hidden="true">✳</div>
+        <p class="eyebrow">ASISTEN AI ANDA</p>
+        <h1>Apa yang ingin<br class="mobile-break"> Anda kerjakan?</h1>
+        <p class="welcome-copy">Tanyakan, cari ide, atau susun rencana bersama Man-Ai.</p>
+        <div class="suggestions" aria-label="Contoh pertanyaan">
+          <button class="suggestion" type="button" data-prompt="Bantu saya menyusun rencana belajar yang realistis untuk 30 hari."><span class="suggestion-icon">✧</span><span>Buat rencana belajar 30 hari</span><span class="suggestion-arrow">↗</span></button>
+          <button class="suggestion" type="button" data-prompt="Jelaskan konsep kecerdasan buatan dengan contoh sederhana."><span class="suggestion-icon">◇</span><span>Jelaskan konsep yang rumit</span><span class="suggestion-arrow">↗</span></button>
+          <button class="suggestion" type="button" data-prompt="Bantu saya menulis email profesional untuk meminta jadwal pertemuan."><span class="suggestion-icon">⌁</span><span>Tulis draf email profesional</span><span class="suggestion-arrow">↗</span></button>
+        </div>
+      </section>
+      <section class="conversation" id="conversation" aria-live="polite" aria-label="Percakapan" hidden></section>
+      <form class="composer" id="chatForm">
+        <label class="visually-hidden" for="chatInput">Tulis pesan</label>
+        <textarea id="chatInput" rows="1" maxlength="8000" placeholder="Kirim pesan ke Man-Ai…" required></textarea>
+        <div class="composer-bottom"><span class="composer-note">Gemini dapat membuat kesalahan. Periksa informasi penting.</span><div class="composer-actions"><span class="char-count" id="charCount">0 / 8000</span><button class="send-button" id="sendButton" type="submit" aria-label="Kirim pesan" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m-7 7 7-7 7 7"></path></svg></button></div></div>
+      </form>
+      <p class="privacy-note">Percakapan hanya tersimpan di sesi halaman ini.</p>
+    </main>
+  </div>
+  <div class="modal-backdrop" id="connectorsModal" hidden>
+    <section class="connector-dialog" role="dialog" aria-modal="true" aria-labelledby="connectorsTitle">
+      <div class="dialog-heading"><div><p class="eyebrow">INTEGRASI</p><h2 id="connectorsTitle">Konektor Anda</h2></div><button class="icon-button close-button" id="connectorsClose" type="button" aria-label="Tutup">×</button></div>
+      <p class="dialog-copy">Hubungkan layanan untuk melihat informasi baca-saja. Token disimpan sementara di sesi browser dan diteruskan server hanya untuk panggilan API baca-saja; token tidak dicatat atau disimpan di server.</p>
+      <div id="connectorCards" class="connector-list">
+        <article class="connector-card" data-provider="github"><div class="connector-heading"><span class="provider-icon github-icon">GH</span><div><h3>GitHub</h3><p id="githubStatus">Belum terhubung</p></div><span class="connected-dot" id="githubDot"></span></div><label for="githubToken">Personal access token</label><input id="githubToken" type="password" autocomplete="off" placeholder="ghp_…"/><small>Gunakan izin baca repo dan workflow saja.</small><div class="connector-result" id="githubResult" hidden></div><div class="connector-actions"><button type="button" class="text-button disconnect-button" data-provider="github" hidden>Putuskan</button><button type="button" class="connect-button" data-provider="github">Hubungkan</button></div></article>
+        <article class="connector-card" data-provider="render"><div class="connector-heading"><span class="provider-icon render-icon">R</span><div><h3>Render</h3><p id="renderStatus">Belum terhubung</p></div><span class="connected-dot" id="renderDot"></span></div><label for="renderToken">API key</label><input id="renderToken" type="password" autocomplete="off" placeholder="rnd_…"/><small>Akses hanya digunakan untuk membaca daftar service.</small><div class="connector-result" id="renderResult" hidden></div><div class="connector-actions"><button type="button" class="text-button disconnect-button" data-provider="render" hidden>Putuskan</button><button type="button" class="connect-button" data-provider="render">Hubungkan</button></div></article>
+        <article class="connector-card" data-provider="supabase"><div class="connector-heading"><span class="provider-icon supabase-icon">S</span><div><h3>Supabase</h3><p id="supabaseStatus">Belum terhubung</p></div><span class="connected-dot" id="supabaseDot"></span></div><label for="supabaseUrl">Project URL</label><input id="supabaseUrl" type="url" autocomplete="off" placeholder="https://project-ref.supabase.co"/><label for="supabaseAnonKey">Publishable/anon key</label><input id="supabaseAnonKey" type="password" autocomplete="off" placeholder="sb_publishable_…"/><small>Gunakan key publik; jangan masukkan service_role key.</small><div class="connector-result" id="supabaseResult" hidden></div><div class="connector-actions"><button type="button" class="text-button disconnect-button" data-provider="supabase" hidden>Putuskan</button><button type="button" class="connect-button" data-provider="supabase">Hubungkan</button></div></article>
+      </div>
+      <p class="security-note">Konektor dibatasi ke pembacaan metadata. Jangan masukkan secret key atau service-role key.</p>
+    </section>
+  </div>
+  <script src="/script.js" defer></script>
+</body>
+</html>

@@ -23,3 +23,14 @@ Deploy repo ini sebagai layanan web Node.js, bukan hanya hosting statis GitHub P
 Pengunjung dapat memakai chat tanpa login. Server membatasi panjang prompt hingga 8.000 karakter, maksimal 12 pesan per menit untuk tiap IP, serta 200 pesan per hari secara global sebagai nilai bawaan. Atur `GEMINI_DAILY_LIMIT` untuk mengubah batas harian. Batas dalam memori ini akan direset saat layanan dimulai ulang dan hanya merupakan perlindungan sederhana; untuk penggunaan produksi, tambahkan pembatas pemakaian bersama yang persisten, pemantauan penggunaan, dan batas pengeluaran pada proyek Google API. Penggunaan Gemini tetap mengikuti ketersediaan model, kuota, dan pengaturan tagihan akun.
 
 Browser menyimpan ID interaksi Gemini yang sedang berlangsung hanya di memori untuk pertanyaan lanjutan. Situs tidak memakai akun pengguna atau menyimpan riwayat chat di database.
+
+
+## Konektor baca-saja
+
+Panel Konektor mendukung uji koneksi GitHub, Render, dan Supabase. Saat ini konektor hanya membaca daftar repo GitHub, daftar service Render, dan metadata endpoint REST Supabase; konektor belum menjalankan commit, deployment, query data, atau perubahan apa pun. Token dimasukkan oleh pengguna, disimpan sementara di `sessionStorage` browser, diteruskan ke server untuk panggilan API yang dibatasi, dan tidak disimpan di server/database. Tutup tab untuk menghapus sesi konektor. Gunakan hanya perangkat tepercaya dan token dengan akses seminimal mungkin.
+
+- GitHub: gunakan personal access token dengan izin metadata baca untuk repo yang dipilih.
+- Render: gunakan API key. API key Render dapat memiliki akses luas; server aplikasi hanya memanggil endpoint daftar service, tetapi lindungi token seperti password.
+- Supabase: gunakan URL proyek dan publishable/anon key; `service_role` key ditolak. Endpoint metadata hanya menampilkan jalur yang diizinkan oleh key tersebut.
+
+Koneksi dilakukan dari backend Node.js aplikasi, sehingga deploy harus memakai `npm start` di layanan web seperti Render dan bukan GitHub Pages statis. Jangan tempelkan token ke prompt atau commit ke Git.
