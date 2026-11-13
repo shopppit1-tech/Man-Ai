@@ -223,6 +223,9 @@ function serveStatic(req, res, pathname) {
     const type = contentTypes[path.extname(filePath).toLowerCase()] || "application/octet-stream";
     res.writeHead(200, {
       "Content-Type": type,
+      "Cache-Control": ["/", "/index.html", "/service-worker.js", "/manifest.webmanifest"].includes(pathname)
+        ? "no-cache, no-store, must-revalidate"
+        : "public, max-age=3600",
       "X-Content-Type-Options": "nosniff",
       "Referrer-Policy": "strict-origin-when-cross-origin",
       "Content-Security-Policy": "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; base-uri 'self'; frame-ancestors 'none'"

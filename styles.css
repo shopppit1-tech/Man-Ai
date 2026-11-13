@@ -17,7 +17,6 @@
 .message-pending .message-text { color: var(--text-secondary); animation: pulse 1.2s ease-in-out infinite alternate; }
 .message-error { background: #fff1f0; color: #8c2b23; }
 @keyframes pulse { to { opacity: .45; } }
-.chat-note { margin: 11px 8px 0; color: var(--text-secondary); font-size: 12px; line-height: 1.5; }
 .intelligence-section p { margin-top: 10px; color: var(--text-secondary); font-size: 14px; }
 .modal-backdrop[hidden] { display: none; }
 .modal-backdrop:not([hidden]) { display: flex; }
