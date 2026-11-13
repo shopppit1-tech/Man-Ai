@@ -5,8 +5,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const chips = document.querySelectorAll(".chip");
   const modalBackdrop = document.getElementById("modal-backdrop");
   const modalClose = document.getElementById("modal-close");
+  const installBtn = document.getElementById("install-btn");
   let previousInteractionId = null;
   let busy = false;
+  let deferredInstallPrompt = null;
 
   function updateSendButton() {
     sendBtn.disabled = busy || chatInput.textContent.trim().length === 0;
@@ -103,4 +105,29 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !modalBackdrop.hidden) closeHelp();
   });
+
+  window.addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    installBtn.hidden = false;
+  });
+
+  installBtn.addEventListener("click", async () => {
+    if (!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    installBtn.hidden = true;
+  });
+
+  window.addEventListener("appinstalled", () => {
+    deferredInstallPrompt = null;
+    installBtn.hidden = true;
+  });
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/service-worker.js").catch((error) => {
+      console.warn("PWA service worker gagal didaftarkan:", error);
+    });
+  }
 });

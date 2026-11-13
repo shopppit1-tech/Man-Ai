@@ -1,0 +1,25 @@
+{
+  "name": "Man-Ai — Asisten AI",
+  "short_name": "Man-Ai",
+  "description": "Chat AI berbahasa Indonesia yang didukung Gemini.",
+  "lang": "id-ID",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f8f8f7",
+  "theme_color": "#111111",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

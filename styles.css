@@ -25,6 +25,7 @@
 .footer-col span { font-size: 14px; color: var(--text-secondary); }
 .send-btn:disabled { cursor: not-allowed; }
 .chat-input-area:focus { outline: none; }
+.install-btn[hidden] { display: none; }
 @media (max-width: 640px) {
   .nav-content { padding: 10px 14px; gap: 8px; }
   .nav-actions { gap: 6px; }
