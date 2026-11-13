@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let busy = false;
   let deferredInstallPrompt = null;
   let currentUser = null;
+  let historyLoadedFor = null;
   const supabaseConfig = window.__SUPABASE_CONFIG__ || {};
   const authClient = window.supabase && supabaseConfig.url && supabaseConfig.anonKey
     ? window.supabase.createClient(supabaseConfig.url, supabaseConfig.anonKey)
@@ -47,6 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!message || busy) return;
 
     addMessage("user", message);
+    void saveChatMessage("user", message);
     chatInput.textContent = "";
     chatInput.focus();
     busy = true;
@@ -66,6 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
       pending.querySelector(".message-text").textContent = result.reply;
       pending.classList.remove("message-pending");
       previousInteractionId = result.interactionId || null;
+      void saveChatMessage("assistant", result.reply, previousInteractionId);
     } catch (error) {
       pending.classList.add("message-error");
       pending.querySelector(".message-label").textContent = "Jawaban gagal dibuat";
@@ -132,6 +135,35 @@ document.addEventListener("DOMContentLoaded", () => {
       : "Akun dibuat. Periksa email Anda untuk konfirmasi sebelum login.";
   }
 
+  async function saveChatMessage(role, content, interactionId = null) {
+    if (!authClient || !currentUser || !content) return;
+    const { error } = await authClient.from("chat_messages").insert({
+      user_id: currentUser.id,
+      role,
+      content,
+      interaction_id: interactionId
+    });
+    if (error) console.warn("Riwayat chat tidak tersimpan:", error.message);
+  }
+
+  async function loadHistory() {
+    if (!authClient || !currentUser || historyLoadedFor === currentUser.id) return;
+    const { data, error } = await authClient
+      .from("chat_messages")
+      .select("role, content, interaction_id, created_at")
+      .order("created_at", { ascending: true })
+      .limit(100);
+    if (error) {
+      console.warn("Riwayat chat tidak dapat dimuat:", error.message);
+      return;
+    }
+    conversation.replaceChildren();
+    data.forEach((message) => addMessage(message.role, message.content));
+    const lastInteraction = [...data].reverse().find((message) => message.interaction_id);
+    previousInteractionId = lastInteraction?.interaction_id || null;
+    historyLoadedFor = currentUser.id;
+  }
+
   chatInput.addEventListener("input", updateSendButton);
   chatInput.addEventListener("keydown", (event) => {
     if (event.key === "Enter" && !event.shiftKey) {
@@ -163,6 +195,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!currentUser) return openAuth();
     if (authClient) await authClient.auth.signOut();
     currentUser = null;
+    historyLoadedFor = null;
+    previousInteractionId = null;
+    conversation.replaceChildren();
     updateAuthButton();
   });
   authClose.addEventListener("click", closeAuth);
@@ -190,10 +225,12 @@ document.addEventListener("DOMContentLoaded", () => {
     authClient.auth.getSession().then(({ data }) => {
       currentUser = data.session?.user || null;
       updateAuthButton();
+      void loadHistory();
     });
     authClient.auth.onAuthStateChange((_event, session) => {
       currentUser = session?.user || null;
       updateAuthButton();
+      if (currentUser) void loadHistory();
     });
   }
 
